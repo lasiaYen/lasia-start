@@ -1,9 +1,10 @@
-import { echo, list } from '@/commands';
+import { echo, list, search } from '@/commands';
 
 class Engine {
   static commands = {
     echo,
     list,
+    search,
   };
 
   static syntaxTreeResolver(tree) {
@@ -14,7 +15,6 @@ class Engine {
       params[tempKey] = raw[key];
     });
     const res = this.commands[command].do(commandValue, params);
-    console.log(res);
     return res;
   }
 }

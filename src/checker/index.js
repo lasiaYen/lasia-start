@@ -1,10 +1,11 @@
 // import Error from '@/error';
 
-class Commands {
-  static commandsList = ['echo'];
+class Checker {
+  static commandsList = ['echo', 'search'];
 
   static paramsList = {
-    echo: ['--time', '--date', '--weather'],
+    echo: ['--time', '--config', '--weather'],
+    search: ['--bing', '--baidu', '--google'],
   };
 
   static commandCheck(tree) {
@@ -26,4 +27,4 @@ class Commands {
   }
 }
 
-export default Commands;
+export default Checker;
