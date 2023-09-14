@@ -1,5 +1,13 @@
 import echo from './echo';
 import list from './list';
 import search from './search';
+import conf from './conf';
 
-export { echo, list, search };
+const Modules = {
+  echo,
+  list,
+  conf,
+  search,
+};
+
+export default Modules;

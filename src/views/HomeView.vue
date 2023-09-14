@@ -9,7 +9,11 @@
     <div v-for="item in resultArr" class="command-container">
       <div class="result-container" v-html="item" />
       <div class="command-line-wrapper">
-        <div class="status-header" v-html="header" />
+        <div class="status-header">
+          <span>{{ header }}</span>
+          <span>{{ this.$store.state.userName }}</span>
+          <span>{{ headerRight }}</span>
+        </div>
         <i class="command-tag">$</i>
         <input
           ref="input"
@@ -24,9 +28,8 @@
 </template>
 
 <script>
-import Engine from '@/engine';
+import Engine from '../engine/index';
 import Checker from '../checker/index';
-import Error from '../error/index';
 // @ is an alias to /src
 
 export default {
@@ -34,15 +37,19 @@ export default {
   data() {
     return {
       command: '',
-      header: '&ltLasia:\\User\\Unknown&gt',
+      header: '<Lasia:\\User\\',
+      headerRight: '>',
       resultArr: [''],
       resultTem: '',
     };
   },
   methods: {
+    // 先构建语法树，建立过程中判断参数和赋值的格式是否有错误（并不检查参数是否合法），
+    // 检查命令头，没有错误后交由 Checker 类检查指令和参数是否出错
+    // 检查完毕后，交由 Engine 类进行执行
     syntaxTreeCreator() {
       const arr = this.command.split(' ');
-      const cmdArr = [];
+      let cmdArr = [];
       arr.forEach((item) => {
         if (item !== '') {
           cmdArr.push(item);
@@ -53,8 +60,14 @@ export default {
         return;
       }
       if (cmdArr[0] !== 'sia') {
-        this.resultTem += Error.headerErr(cmdArr[0]);
-        this.resultDisplay();
+        const syntaxTree = {
+          header: 'sia',
+          command: 'search',
+          commandValue: cmdArr.join(' '),
+          paramsArr: [],
+          params: {},
+        };
+        this.errorChecker(syntaxTree);
         return;
       }
       const syntaxTree = {
@@ -65,29 +78,33 @@ export default {
         params: {},
       };
       syntaxTree.command = cmdArr?.shift();
-      if (!this.checkIsParams(cmdArr[0])) {
-        syntaxTree.commandValue = cmdArr.shift();
+      let commandValue = '';
+      for (let i = 0; i < cmdArr.length; i += 1) {
+        if (!this.checkIsParams(cmdArr[i])) {
+          commandValue += ` ${cmdArr[i]}`;
+        } else {
+          cmdArr = cmdArr.slice(i);
+          break;
+        }
       }
-      let isFindParams = true;
-      cmdArr.forEach((item, index) => {
-        if (isFindParams) {
-          if (!this.checkIsParams(item)) {
-            this.resultTem += `${item} 参数不符合语法规范,已被忽略 `;
-          } else {
-            syntaxTree.paramsArr.push(item);
-            syntaxTree.params[item] = true;
-            if (!this.checkIsParams(cmdArr[index + 1])) {
-              isFindParams = false;
-              if (cmdArr[index + 1]) {
-                syntaxTree.params[item] = cmdArr[index + 1];
-              }
+      syntaxTree.commandValue = commandValue.trim();
+      let paramValue = '';
+      for (let i = 0; i < cmdArr.length; i += 1) {
+        if (this.checkIsParams(cmdArr[i])) {
+          syntaxTree.paramsArr.push(cmdArr[i]);
+          paramValue = '';
+          let x = i + 1;
+          for (x; x < cmdArr.length; x += 1) {
+            if (!this.checkIsParams(cmdArr[x])) {
+              paramValue += ` ${cmdArr[x]}`;
+            } else {
+              break;
             }
           }
-        } else {
-          isFindParams = true;
+          syntaxTree.params[cmdArr[i]] = paramValue.trim();
+          i = x - 1;
         }
-      });
-      console.log(syntaxTree);
+      }
       this.errorChecker(syntaxTree);
     },
 
@@ -113,20 +130,6 @@ export default {
       return false;
     },
 
-    // 先构建语法树，建立过程中判断参数和赋值的格式是否有错误（并不检查参数是否合法），
-    // 检查命令头，没有错误后交由 Checker 类检查指令和参数是否出错
-    // 检查完毕后，交由 Engine 类进行执行
-    commandSyntaxResolver(cmdArr) {
-      if (cmdArr[0] !== 'sia') {
-        this.resultDisplay(Error.headerErr(cmdArr[0]));
-        return;
-      }
-      if (Checker.commandCheck(cmdArr[1])) {
-        this.resultDisplay('have');
-      } else {
-        this.resultDisplay(Error.commandErr(cmdArr[1]));
-      }
-    },
     resultDisplay() {
       this.resultArr.push(this.resultTem);
       this.$nextTick(() => {
@@ -160,6 +163,18 @@ export default {
   .command-container {
     .result-container {
       margin-bottom: 10px;
+
+      .error {
+        color: #f56c6c;
+      }
+
+      .warning {
+        color: #e6a23c;
+      }
+
+      .success {
+        color: #67c23a;
+      }
     }
 
     .command-line-wrapper {

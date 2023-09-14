@@ -3,6 +3,8 @@ import Cookies from 'js-cookie';
 export default class search {
   static engine = '';
 
+  static params = ['--bing', '--baidu', '--google'];
+
   static do(val, params) {
     let result = '';
     this.engine = Cookies.get('engine');
@@ -29,18 +31,15 @@ export default class search {
   }
 
   static operate(val) {
-    const valid = ['bing', 'baidu', 'google'];
     let { engine } = this;
     let url = '';
     let res = '';
     if (engine === undefined) {
       engine = 'bing';
-      res = '<div>未配置默认搜索引擎，可以通过sia set --engine value进行默认搜索引擎的设置。</div>';
+      res = `<div>未配置默认搜索引擎，可以通过
+        sia conf --engine value进行默认搜索引擎的设置。</div>`;
     }
-    if (valid.indexOf(engine) === -1) {
-      res = ` <div>本地配置中engine参数不合法，其合法参数为bing,baidu,google</div>
-              <div>当前参数为${engine}，默认使用bing</div>`;
-    }
+
     switch (engine) {
       case 'baidu':
         url = `https://www.baidu.com/s?word=${val}`;

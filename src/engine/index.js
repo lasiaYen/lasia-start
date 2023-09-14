@@ -1,12 +1,6 @@
-import { echo, list, search } from '@/commands';
+import Modules from '@/commands';
 
 class Engine {
-  static commands = {
-    echo,
-    list,
-    search,
-  };
-
   static syntaxTreeResolver(tree) {
     const { command, commandValue, params: raw } = tree;
     const params = {};
@@ -14,7 +8,7 @@ class Engine {
       const tempKey = key.split('').slice(2).join('');
       params[tempKey] = raw[key];
     });
-    const res = this.commands[command].do(commandValue, params);
+    const res = Modules[command].do(commandValue, params);
     return res;
   }
 }

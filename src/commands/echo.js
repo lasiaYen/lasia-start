@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie';
 
 export default class echo {
+  static params = ['--time', '--config'];
+
   static do(val, params) {
     let result = '';
     result += this.operate(val);
@@ -11,8 +13,6 @@ export default class echo {
   }
 
   static operate(val) {
-    Cookies.remove('engine');
-    console.log(Cookies.get('engine'));
     return `<div>${val}</div>`;
   }
 
@@ -22,9 +22,12 @@ export default class echo {
   }
 
   static config(val) {
+    if (val === '') {
+      return "<div class='error'>--config 参数需要一个值</div>";
+    }
     const res = Cookies.get(val);
     if (res === undefined) {
-      return `<div>${val}配置不存在</div>`;
+      return `<div class='warning'>${val}配置不存在</div>`;
     }
     return `<div>${val}=> ${res}</div>`;
   }
