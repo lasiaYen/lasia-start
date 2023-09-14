@@ -20,6 +20,8 @@
           class="command-input"
           @input="handleCommandInput"
           @keyup.enter="submitCommand"
+          @keyup.up="lastCommand"
+          @keyup.down="nextCommand"
           autofocus
         />
       </div>
@@ -41,6 +43,8 @@ export default {
       headerRight: '>',
       resultArr: [''],
       resultTem: '',
+      commandArr: [],
+      commandIndex: 0,
     };
   },
   methods: {
@@ -143,7 +147,37 @@ export default {
       this.resultTem = '';
       e.target.disabled = true;
       this.syntaxTreeCreator();
+      this.commandArr.push(this.command);
+      this.commandIndex = this.commandArr.length;
       this.command = '';
+    },
+    lastCommand(e) {
+      if (this.commandIndex > 0) {
+        this.commandIndex -= 1;
+        console.log(this.commandIndex, 'up');
+        this.command = this.commandArr[this.commandIndex];
+        e.target.value = this.command;
+        e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+      }
+    },
+    nextCommand(e) {
+      const len = this.commandArr.length;
+      let index = this.commandIndex;
+      let command = '';
+      if (index < len) {
+        if (index === len - 1) {
+          command = '';
+          index += 1;
+        } else {
+          index += 1;
+          command = this.commandArr[index];
+        }
+        this.commandIndex = index;
+        console.log(this.commandIndex, 'down');
+        e.target.value = command;
+        this.command = command;
+        e.target.setSelectionRange(command.length, command.length);
+      }
     },
   },
 };

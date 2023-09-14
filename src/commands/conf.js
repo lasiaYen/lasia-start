@@ -4,12 +4,21 @@ import store from '@/store';
 export default class conf {
   static params = ['--user', '--engine', '--location', '--del', '--clear'];
 
-  static describe = '';
+  static describe = '用户信息及基本配置';
 
   static confInfo = [
     { name: '--user', info: '用户名' },
     { name: '--engine', info: '默认搜索引擎' },
     { name: '--location', info: '所处城市' },
+  ];
+
+  static paramsInfo = [
+    { name: 'sia conf', info: '不接收值，当没有其他参数时显示所有 Conf 信息' },
+    { name: '--user', info: '设置用户名' },
+    { name: '--engine', info: '设置默认搜索引擎' },
+    { name: '--location', info: '设置当前所在地' },
+    { name: '--del', info: '删除某一项 Conf' },
+    { name: '--clear', info: '清除所有 Conf' },
   ];
 
   static do(val, params) {

@@ -5,6 +5,15 @@ export default class search {
 
   static params = ['--bing', '--baidu', '--google'];
 
+  static describe = '搜索功能';
+
+  static paramsInfo = [
+    { name: 'sia search', info: '搜索功能，接受一个参数作为搜索关键字' },
+    { name: '--bing', info: '指定使用 Bing 搜索，无视默认引擎设置' },
+    { name: '--baidu', info: '指定使用 Baidu 搜索，无视默认引擎设置' },
+    { name: '--google', info: '指定使用 Google 搜索，无视默认引擎设置' },
+  ];
+
   static do(val, params) {
     let result = '';
     this.engine = Cookies.get('engine');
