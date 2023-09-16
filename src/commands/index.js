@@ -1,5 +1,5 @@
+/* eslint-disable import/no-cycle */
 import echo from './echo';
-// eslint-disable-next-line import/no-cycle
 import list from './list';
 import search from './search';
 import conf from './conf';
