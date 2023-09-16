@@ -2,8 +2,13 @@
 <template>
   <div class="container">
     <div class="welcome-wrapper">
-      <div class="welcome">Microsoft Windows [版本 10.0.22621.2134]</div>
-      <div class="welcome">(c) Microsoft Corporation。保留所有权利。</div>
+      <div class="welcome">Lasia Start 起始页 [ Version 1.0.0 ]</div>
+      <div class="welcome" style="margin-right: 40px">
+        项目链接及文档
+        <a class="url" href="https://github.com/lasiaYen/lasia-start"
+          >https://github.com/lasiaYen/lasia-start</a
+        >
+      </div>
     </div>
     <!-- eslint-disable-next-line vue/require-v-for-key -->
     <div v-for="item in resultArr" class="command-container">
@@ -30,6 +35,7 @@
 </template>
 
 <script>
+import jsCookie from 'js-cookie';
 import Engine from '../engine/index';
 import Checker from '../checker/index';
 // @ is an alias to /src
@@ -46,6 +52,9 @@ export default {
       commandArr: [],
       commandIndex: 0,
     };
+  },
+  mounted() {
+    this.$store.commit('setName', jsCookie.get('user'));
   },
   methods: {
     // 先构建语法树，建立过程中判断参数和赋值的格式是否有错误（并不检查参数是否合法），
@@ -117,7 +126,6 @@ export default {
       if (checker.isCorrect) {
         this.resultTem = Engine.syntaxTreeResolver(tree);
         this.resultDisplay();
-        console.log('working');
       } else {
         this.resultTem += checker.result;
         this.resultDisplay();
@@ -154,7 +162,6 @@ export default {
     lastCommand(e) {
       if (this.commandIndex > 0) {
         this.commandIndex -= 1;
-        console.log(this.commandIndex, 'up');
         this.command = this.commandArr[this.commandIndex];
         e.target.value = this.command;
         e.target.setSelectionRange(e.target.value.length, e.target.value.length);
@@ -173,7 +180,6 @@ export default {
           command = this.commandArr[index];
         }
         this.commandIndex = index;
-        console.log(this.commandIndex, 'down');
         e.target.value = command;
         this.command = command;
         e.target.setSelectionRange(command.length, command.length);
@@ -192,6 +198,11 @@ export default {
   .welcome-wrapper {
     margin-bottom: 20px;
     cursor: default;
+  }
+
+  .url {
+    color: inherit;
+    text-decoration: none;
   }
 
   .command-container {
