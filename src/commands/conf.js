@@ -31,7 +31,6 @@ export default class conf {
   }
 
   static operate(val, params) {
-    console.log(params);
     if (Object.keys(params).length === 0) {
       let res = '';
       this.confInfo.forEach((item) => {
