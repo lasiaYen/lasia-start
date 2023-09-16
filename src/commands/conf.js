@@ -48,9 +48,12 @@ export default class conf {
   }
 
   static user(val) {
-    if (val.length > 10) {
-      return "<div class='error'>用户名长度不能超过十位</div>";
+    if (val !== undefined) {
+      if (val.length > 10) {
+        return "<div class='error'>用户名长度不能超过十位</div>";
+      }
     }
+
     Cookies.set('user', val);
     store.commit('setName', Cookies.get('user'));
     return '';
