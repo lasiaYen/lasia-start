@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie';
 import store from '@/store';
 
+const max = 36500;
+
 export default class conf {
   static params = ['--user', '--engine', '--location', '--del', '--clear'];
 
@@ -54,7 +56,7 @@ export default class conf {
       }
     }
 
-    Cookies.set('user', val);
+    Cookies.set('user', val, { expires: max });
     store.commit('setName', Cookies.get('user'));
     return '';
   }
@@ -65,12 +67,12 @@ export default class conf {
       return `<div class="error">--engine 参数只能接受 ${engineList.join(', ')} 之一的值。
       若此项未配置则默认使用Bing</div>`;
     }
-    Cookies.set('engine', val);
+    Cookies.set('engine', val, { expires: max });
     return '';
   }
 
   static location(val) {
-    Cookies.set('location', val);
+    Cookies.set('location', val, { expires: max });
     return '';
   }
 

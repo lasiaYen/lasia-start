@@ -8,7 +8,7 @@ export default class echo {
   static paramsInfo = [
     { name: 'sia echo', info: '接收一个值，并将其输出' },
     { name: '--time', info: '输出当前时间，不接收值' },
-    { name: '--conf', info: '输出某一项Conf,接受一个值用于描述 Conf 的 key' },
+    { name: '--conf', info: '输出某一项 Conf,接受一个值用于描述 Conf 的 key' },
   ];
 
   static do(val, params) {
@@ -35,7 +35,7 @@ export default class echo {
     }
     const res = Cookies.get(val);
     if (res === undefined) {
-      return `<div class='warning'>${val}配置不存在</div>`;
+      return `<div class='warning'>${val} 配置不存在</div>`;
     }
     return `<div>${val} ------> ${res}</div>`;
   }
